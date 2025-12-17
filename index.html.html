@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Simple Detective</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --pastel-blue: #a2d2ff;
+            --pastel-green: #bde0fe;
+            --pastel-purple: #cdb4db;
+            --pastel-pink: #ffc8dd;
+            --pastel-yellow: #ffd6a5;
+            --pastel-red: #ffadad;
+            --pastel-teal: #9bf6ff;
+            --dark-text: #333333;
+            --light-text: #5a5a5a;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+            display: none;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--pastel-blue), var(--pastel-teal));
+            padding: 25px 30px;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .game-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-subtitle {
+            font-size: 1.1rem;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.4rem;
+        }
+
+        /* Main Game Area */
+        .game-area {
+            display: flex;
+            min-height: 600px;
+        }
+
+        /* Left Panel - Players */
+        .players-panel {
+            flex: 0 0 250px;
+            background-color: var(--pastel-green);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .player {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 18px 15px;
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .player.active {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px var(--shadow);
+            border-left: 5px solid var(--pastel-purple);
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--dark-text);
+        }
+
+        .player-score {
+            font-size: 1.1rem;
+            color: var(--light-text);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .player-badge {
+            background-color: var(--pastel-yellow);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Center Panel - Game Content */
+        .game-content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            background-color: #fafafa;
+        }
+
+        .mission-area {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 25px;
+            flex: 1;
+        }
+
+        .mission-title {
+            font-size: 1.5rem;
+            color: var(--pastel-purple);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mission-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+        }
+
+        .clue-box {
+            background-color: var(--pastel-yellow);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--pastel-red);
+        }
+
+        .clue-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+            font-size: 1.2rem;
+        }
+
+        .clue-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #d45d5d;
+        }
+
+        .witness-area {
+            background-color: var(--pastel-teal);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .witness-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+            font-size: 1.2rem;
+        }
+
+        .witness-text {
+            font-size: 1.1rem;
+            color: var(--dark-text);
+            font-style: italic;
+        }
+
+        .question-area {
+            margin-top: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--pastel-blue);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: var(--pastel-purple);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--pastel-purple);
+            color: var(--white);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #b8a2c9;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background-color: var(--pastel-blue);
+            color: var(--dark-text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #8fb9e6;
+        }
+
+        /* Right Panel - Progress & Help */
+        .progress-panel {
+            flex: 0 0 250px;
+            background-color: var(--pastel-pink);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .progress-container {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .progress-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--pastel-blue), var(--pastel-teal));
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        .hint-container {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .hint-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .hint-content {
+            font-size: 1rem;
+            color: var(--light-text);
+        }
+
+        .hint-list {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .hint-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Screens */
+        #start-screen, #end-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .screen-title {
+            font-size: 3rem;
+            color: var(--pastel-purple);
+            margin-bottom: 20px;
+        }
+
+        .screen-subtitle {
+            font-size: 1.3rem;
+            color: var(--light-text);
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        .player-setup {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        .player-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border: 2px solid var(--pastel-blue);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .rules {
+            background-color: var(--pastel-yellow);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        .rules-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .rules-list {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .rules-list li {
+            margin-bottom: 10px;
+        }
+
+        .btn-large {
+            padding: 18px 40px;
+            font-size: 1.3rem;
+        }
+
+        /* End Screen */
+        .results-table {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .results-table th {
+            background-color: var(--pastel-blue);
+            padding: 20px;
+            color: var(--dark-text);
+            font-size: 1.2rem;
+        }
+
+        .results-table td {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .winner-badge {
+            background-color: var(--pastel-yellow);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Timer Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .timer-warning {
+            animation: pulse 1s infinite;
+            color: var(--pastel-red) !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .players-panel, .progress-panel {
+                flex: none;
+                width: 100%;
+            }
+            
+            .players-panel {
+                order: 2;
+            }
+            
+            .progress-panel {
+                order: 3;
+            }
+            
+            .player-setup {
+                flex-direction: column;
+            }
+            
+            .player-input {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .game-info {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .screen-title {
+                font-size: 2.2rem;
+            }
+            
+            .game-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .game-info {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Feedback Messages */
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: rgba(162, 210, 255, 0.3);
+            color: #2a6eb3;
+            border-left: 5px solid var(--pastel-blue);
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(255, 173, 173, 0.3);
+            color: #b32a2a;
+            border-left: 5px solid var(--pastel-red);
+        }
+
+        /* Grammar Helper */
+        .grammar-helper {
+            background-color: var(--pastel-green);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .grammar-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .grammar-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .example-btn {
+            background-color: var(--white);
+            border: 1px solid var(--pastel-blue);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            background-color: var(--pastel-blue);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="start-screen" class="container">
+        <h1 class="screen-title">Past Simple Detective</h1>
+        <p class="screen-subtitle">A theft has occurred at the school! Interview witnesses, ask questions in Past Simple, and find the thief before time runs out!</p>
+        
+        <div class="rules">
+            <h2 class="rules-title">How to Play</h2>
+            <ul class="rules-list">
+                <li>Up to 4 players can join the investigation</li>
+                <li>Each player takes turns interviewing witnesses</li>
+                <li>You must ask questions using <strong>Past Simple tense</strong></li>
+                <li>Compare witness answers with the clue to find the thief</li>
+                <li>Complete 10 interviews before the 15-minute timer ends</li>
+                <li>Earn points for correct questions and identifying the thief</li>
+            </ul>
+            <p><strong>Remember:</strong> Use Did/Was/Were for questions: "What did you do?", "Where were you?", "Did you see...?"</p>
+        </div>
+        
+        <div class="player-setup">
+            <input type="text" class="player-input" id="player1" placeholder="Detective 1 Name">
+            <input type="text" class="player-input" id="player2" placeholder="Detective 2 Name">
+            <input type="text" class="player-input" id="player3" placeholder="Detective 3 Name (optional)">
+            <input type="text" class="player-input" id="player4" placeholder="Detective 4 Name (optional)">
+        </div>
+        
+        <button id="start-game" class="btn btn-primary btn-large">
+            <i class="fas fa-play-circle"></i> Start Investigation
+        </button>
+    </div>
+    
+    <!-- Game Screen -->
+    <div id="game-screen" class="container">
+        <div class="header">
+            <div>
+                <h1 class="game-title">Past Simple Detective</h1>
+                <p class="game-subtitle">Find the thief by asking the right questions!</p>
+            </div>
+            <div class="game-info">
+                <div class="info-item">
+                    <div class="info-label">TIME LEFT</div>
+                    <div class="info-value" id="timer">15:00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">INTERVIEW</div>
+                    <div class="info-value" id="current-interview">1/10</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CLUES FOUND</div>
+                    <div class="info-value" id="clues-found">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="players-panel">
+                <h3 class="panel-title">DETECTIVES</h3>
+                <div id="players-container">
+                    <!-- Players will be inserted here by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="game-content">
+                <div class="mission-area">
+                    <h2 class="mission-title"><i class="fas fa-search"></i> Case File: <span id="case-title">The Missing Trophy</span></h2>
+                    <p class="mission-text">The school trophy has been stolen from the principal's office between 4:00 PM and 5:00 PM yesterday. Interview witnesses to find out who was near the office during that time.</p>
+                    
+                    <div class="clue-box">
+                        <div class="clue-title">KEY CLUE:</div>
+                        <div class="clue-text" id="current-clue">The thief was in the school library at 4:30 PM.</div>
+                    </div>
+                    
+                    <div class="witness-area">
+                        <div class="witness-title">WITNESS STATEMENT:</div>
+                        <div class="witness-text" id="witness-statement">"Hello detective. I might have seen something yesterday. What would you like to know?"</div>
+                    </div>
+                    
+                    <div class="question-area">
+                        <div class="input-label">Ask the witness a question in Past Simple:</div>
+                        <input type="text" class="question-input" id="question-input" placeholder="Example: Where were you yesterday at 4:30 PM?">
+                        
+                        <div id="feedback" class="feedback"></div>
+                        
+                        <div class="grammar-helper">
+                            <div class="grammar-title">Need help with Past Simple questions?</div>
+                            <div class="grammar-examples">
+                                <button class="example-btn" data-example="What did you do yesterday?">What did you do?</button>
+                                <button class="example-btn" data-example="Where were you at 4:30 PM?">Where were you?</button>
+                                <button class="example-btn" data-example="Did you see anyone near the office?">Did you see anyone?</button>
+                                <button class="example-btn" data-example="When did you leave the school?">When did you leave?</button>
+                                <button class="example-btn" data-example="Who was with you?">Who was with you?</button>
+                            </div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button id="ask-btn" class="btn btn-primary">
+                                <i class="fas fa-question-circle"></i> Ask Question
+                            </button>
+                            <button id="skip-btn" class="btn btn-secondary">
+                                <i class="fas fa-forward"></i> Next Witness
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-panel">
+                <div class="progress-container">
+                    <h3 class="progress-title">Case Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 10%;"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">1 of 10 witnesses interviewed</div>
+                </div>
+                
+                <div class="hint-container">
+                    <h3 class="hint-title">Past Simple Rules</h3>
+                    <div class="hint-content">
+                        <p>For questions in Past Simple:</p>
+                        <ul class="hint-list">
+                            <li>Use <strong>Did</strong> + subject + base verb: "Did you see...?"</li>
+                            <li>Use <strong>Was/Were</strong> for "to be": "Were you at...?"</li>
+                            <li>Use <strong>What/Where/When</strong> + did + subject + base verb</li>
+                            <li>Answer with: "Yes, I did" / "No, I didn't" / "Yes, he was" / "No, she wasn't"</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="hint-container">
+                    <h3 class="hint-title">Investigation Notes</h3>
+                    <div class="hint-content" id="investigation-notes">
+                        <p>No clues collected yet. Ask questions to gather information!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- End Screen -->
+    <div id="end-screen" class="container">
+        <h1 class="screen-title">Case Closed!</h1>
+        <p class="screen-subtitle" id="case-result">The thief has been identified! Great work, detectives!</p>
+        
+        <div class="results-table">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Detective</th>
+                        <th>Correct Questions</th>
+                        <th>Clues Found</th>
+                        <th>Total Score</th>
+                        <th>Rank</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <!-- Results will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="rules">
+            <h2 class="rules-title">Investigation Summary</h2>
+            <div id="thief-reveal"></div>
+            <div id="learning-summary" style="margin-top: 20px;"></div>
+        </div>
+        
+        <div class="actions" style="justify-content: center;">
+            <button id="play-again" class="btn btn-primary btn-large">
+                <i class="fas fa-redo"></i> New Investigation
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Game Data and State
+        const gameData = {
+            players: [],
+            currentPlayerIndex: 0,
+            currentInterview: 1,
+            totalInterviews: 10,
+            score: 0,
+            cluesFound: 0,
+            timeLeft: 15 * 60, // 15 minutes in seconds
+            timerInterval: null,
+            gameActive: false,
+            thief: null,
+            witnessAnswers: [],
+            clues: [],
+            interviewHistory: []
+        };
+
+        // Game Content
+        const gameContent = {
+            cases: [
+                {
+                    title: "The Missing Trophy",
+                    clue: "The thief was in the school library at 4:30 PM.",
+                    thief: "Mr. Johnson",
+                    motive: "Wanted to win the teacher competition"
+                },
+                {
+                    title: "The Stacked Chairs Mystery",
+                    clue: "The thief was stacking chairs in the gym at 5:15 PM.",
+                    thief: "Sarah Miller",
+                    motive: "Trying to create an art installation"
+                },
+                {
+                    title: "The Cafeteria Caper",
+                    clue: "The thief was eating pizza in the cafeteria at 4:45 PM.",
+                    thief: "Coach Davis",
+                    motive: "Hungry after practice and saw an opportunity"
+                },
+                {
+                    title: "The Science Lab Incident",
+                    clue: "The thief was conducting an experiment in the lab at 4:20 PM.",
+                    thief: "Dr. Evans",
+                    motive: "Needed materials for a personal project"
+                },
+                {
+                    title: "The Art Room Affair",
+                    clue: "The thief was painting in the art room at 4:50 PM.",
+                    thief: "Lisa Chen",
+                    motive: "Inspired by the trophy's design"
+                }
+            ],
+            
+            witnesses: [
+                { name: "Mr. Johnson", role: "Math Teacher", alibi: "I was grading papers in the teacher's lounge from 4 to 5 PM." },
+                { name: "Sarah Miller", role: "Student Council President", alibi: "I was organizing books in the library until 5 PM." },
+                { name: "Coach Davis", role: "Sports Coach", alibi: "I was running drills with the basketball team in the gym." },
+                { name: "Dr. Evans", role: "Science Teacher", alibi: "I was preparing lab equipment for today's experiment." },
+                { name: "Lisa Chen", role: "Art Student", alibi: "I was working on my portfolio in the art room all afternoon." },
+                { name: "Mr. Rodriguez", role: "Janitor", alibi: "I was cleaning the hallway near the principal's office." },
+                { name: "Emma Wilson", role: "School Secretary", alibi: "I was finishing paperwork in the office until 5:30 PM." },
+                { name: "Alex Thompson", role: "Computer Club President", alibi: "I was fixing computers in the tech lab." },
+                { name: "Mrs. Parker", role: "History Teacher", alibi: "I was in a parent-teacher meeting until 4:45 PM." },
+                { name: "David Kim", role: "Music Student", alibi: "I was practicing piano in the music room." }
+            ],
+            
+            questions: [
+                "What did you do yesterday afternoon?",
+                "Where were you at 4:30 PM?",
+                "Did you see anyone near the principal's office?",
+                "When did you leave the school?",
+                "Who was with you?",
+                "Why were you in the school?",
+                "What time did you arrive?",
+                "Did you notice anything unusual?",
+                "Were you alone?",
+                "What did you see?"
+            ],
+            
+            answers: [
+                "I was in my classroom preparing lessons.",
+                "I went to the library to return some books.",
+                "Yes, I saw the janitor cleaning the hallway.",
+                "No, I didn't see anyone suspicious.",
+                "I left at 5:15 PM after finishing my work.",
+                "I was with my friend studying for a test.",
+                "I arrived at 3:45 PM for after-school activities.",
+                "I noticed the trophy was missing when I passed by the office.",
+                "Yes, I was alone at that time.",
+                "I saw someone walking quickly down the hallway."
+            ]
+        };
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const startButton = document.getElementById('start-game');
+        const playAgainButton = document.getElementById('play-again');
+        const askButton = document.getElementById('ask-btn');
+        const skipButton = document.getElementById('skip-btn');
+        const questionInput = document.getElementById('question-input');
+        const timerElement = document.getElementById('timer');
+        const currentInterviewElement = document.getElementById('current-interview');
+        const cluesFoundElement = document.getElementById('clues-found');
+        const progressFillElement = document.getElementById('progress-fill');
+        const progressTextElement = document.getElementById('progress-text');
+        const witnessStatementElement = document.getElementById('witness-statement');
+        const currentClueElement = document.getElementById('current-clue');
+        const feedbackElement = document.getElementById('feedback');
+        const playersContainer = document.getElementById('players-container');
+        const investigationNotesElement = document.getElementById('investigation-notes');
+        const resultsBodyElement = document.getElementById('results-body');
+        const caseResultElement = document.getElementById('case-result');
+        const thiefRevealElement = document.getElementById('thief-reveal');
+        const learningSummaryElement = document.getElementById('learning-summary');
+        const exampleButtons = document.querySelectorAll('.example-btn');
+
+        // Initialize Game
+        function initGame() {
+            // Get player names from inputs
+            gameData.players = [];
+            for (let i = 1; i <= 4; i++) {
+                const playerName = document.getElementById(`player${i}`).value.trim();
+                if (playerName) {
+                    gameData.players.push({
+                        name: playerName,
+                        score: 0,
+                        correctQuestions: 0,
+                        cluesFound: 0,
+                        isActive: gameData.players.length === 0 // First player is active
+                    });
+                }
+            }
+            
+            // If no names entered, create default players
+            if (gameData.players.length === 0) {
+                gameData.players = [
+                    { name: "Detective Alex", score: 0, correctQuestions: 0, cluesFound: 0, isActive: true },
+                    { name: "Detective Sam", score: 0, correctQuestions: 0, cluesFound: 0, isActive: false }
+                ];
+            }
+            
+            // Reset game state
+            gameData.currentPlayerIndex = 0;
+            gameData.currentInterview = 1;
+            gameData.score = 0;
+            gameData.cluesFound = 0;
+            gameData.timeLeft = 15 * 60;
+            gameData.gameActive = true;
+            gameData.witnessAnswers = [];
+            gameData.clues = [];
+            gameData.interviewHistory = [];
+            
+            // Select a random case
+            const randomCase = gameContent.cases[Math.floor(Math.random() * gameContent.cases.length)];
+            gameData.currentCase = randomCase;
+            gameData.thief = randomCase.thief;
+            
+            // Update UI with case info
+            document.getElementById('case-title').textContent = randomCase.title;
+            currentClueElement.textContent = randomCase.clue;
+            
+            // Initialize witnesses
+            shuffleArray(gameContent.witnesses);
+            
+            // Update UI
+            updatePlayersDisplay();
+            updateProgress();
+            updateWitnessStatement();
+            updateInvestigationNotes();
+            
+            // Start timer
+            startTimer();
+            
+            // Show game screen
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            endScreen.style.display = 'none';
+            
+            // Focus on question input
+            questionInput.focus();
+        }
+
+        // Start the countdown timer
+        function startTimer() {
+            if (gameData.timerInterval) {
+                clearInterval(gameData.timerInterval);
+            }
+            
+            gameData.timerInterval = setInterval(() => {
+                gameData.timeLeft--;
+                updateTimerDisplay();
+                
+                if (gameData.timeLeft <= 0) {
+                    endGame();
+                } else if (gameData.timeLeft <= 60) {
+                    timerElement.classList.add('timer-warning');
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameData.timeLeft / 60);
+            const seconds = gameData.timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Update players display
+        function updatePlayersDisplay() {
+            playersContainer.innerHTML = '';
+            
+            gameData.players.forEach((player, index) => {
+                const playerElement = document.createElement('div');
+                playerElement.className = `player ${player.isActive ? 'active' : ''}`;
+                
+                playerElement.innerHTML = `
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-score">
+                        <span>Score: ${player.score}</span>
+                        <span class="player-badge">${player.correctQuestions} correct</span>
+                    </div>
+                `;
+                
+                playersContainer.appendChild(playerElement);
+            });
+        }
+
+        // Update progress display
+        function updateProgress() {
+            const progressPercent = (gameData.currentInterview / gameData.totalInterviews) * 100;
+            progressFillElement.style.width = `${progressPercent}%`;
+            progressTextElement.textContent = `${gameData.currentInterview} of ${gameData.totalInterviews} witnesses interviewed`;
+            currentInterviewElement.textContent = `${gameData.currentInterview}/10`;
+            cluesFoundElement.textContent = gameData.cluesFound;
+        }
+
+        // Update witness statement
+        function updateWitnessStatement() {
+            const currentWitness = gameContent.witnesses[gameData.currentInterview - 1];
+            witnessStatementElement.innerHTML = `<strong>${currentWitness.name}</strong> (${currentWitness.role}): "Hello detective. I might have seen something yesterday. What would you like to know?"`;
+        }
+
+        // Update investigation notes
+        function updateInvestigationNotes() {
+            if (gameData.interviewHistory.length === 0) {
+                investigationNotesElement.innerHTML = "<p>No clues collected yet. Ask questions to gather information!</p>";
+                return;
+            }
+            
+            let notesHTML = "<ul>";
+            gameData.interviewHistory.forEach(interview => {
+                notesHTML += `<li><strong>${interview.witness}:</strong> ${interview.answer}</li>`;
+            });
+            notesHTML += "</ul>";
+            investigationNotesElement.innerHTML = notesHTML;
+        }
+
+        // Check if a question is in Past Simple
+        function isPastSimpleQuestion(question) {
+            question = question.toLowerCase().trim();
+            
+            // Check for question mark
+            if (!question.endsWith('?')) return false;
+            
+            // Remove question mark for checking
+            question = question.slice(0, -1);
+            
+            // Check for common Past Simple question patterns
+            const pastSimplePatterns = [
+                /^what did .+/,
+                /^where did .+/,
+                /^when did .+/,
+                /^who did .+/,
+                /^why did .+/,
+                /^how did .+/,
+                /^did .+/,
+                /^was .+/,
+                /^were .+/
+            ];
+            
+            return pastSimplePatterns.some(pattern => pattern.test(question));
+        }
+
+        // Ask a question
+        function askQuestion() {
+            if (!gameData.gameActive) return;
+            
+            const question = questionInput.value.trim();
+            if (!question) {
+                showFeedback("Please enter a question.", false);
+                return;
+            }
+            
+            // Check if question is in Past Simple
+            if (!isPastSimpleQuestion(question)) {
+                showFeedback("Remember to ask questions in Past Simple! Use Did/Was/Were.", false);
+                questionInput.value = '';
+                return;
+            }
+            
+            // Question is valid - get a random answer
+            const currentPlayer = gameData.players[gameData.currentPlayerIndex];
+            const currentWitness = gameContent.witnesses[gameData.currentInterview - 1];
+            const randomAnswer = gameContent.answers[Math.floor(Math.random() * gameContent.answers.length)];
+            
+            // Update witness statement
+            witnessStatementElement.innerHTML = `<strong>${currentWitness.name}:</strong> "${randomAnswer}"`;
+            
+            // Check if answer contains a clue
+            let foundClue = false;
+            if (Math.random() > 0.6) { // 40% chance of finding a clue
+                foundClue = true;
+                gameData.cluesFound++;
+                currentPlayer.cluesFound++;
+                cluesFoundElement.textContent = gameData.cluesFound;
+                
+                // Add to investigation notes
+                gameData.interviewHistory.push({
+                    witness: currentWitness.name,
+                    answer: randomAnswer
+                });
+                updateInvestigationNotes();
+            }
+            
+            // Update player score
+            currentPlayer.correctQuestions++;
+            currentPlayer.score += 10;
+            if (foundClue) currentPlayer.score += 5;
+            
+            // Show feedback
+            showFeedback(`Good question! ${foundClue ? 'You found a clue!' : ''}`, true);
+            
+            // Clear input
+            questionInput.value = '';
+            
+            // Switch to next player
+            switchToNextPlayer();
+            
+            // Update display
+            updatePlayersDisplay();
+        }
+
+        // Show feedback message
+        function showFeedback(message, isCorrect) {
+            feedbackElement.textContent = message;
+            feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackElement.style.display = 'block';
+            
+            // Hide feedback after 3 seconds
+            setTimeout(() => {
+                feedbackElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Switch to next player
+        function switchToNextPlayer() {
+            // Deactivate current player
+            gameData.players[gameData.currentPlayerIndex].isActive = false;
+            
+            // Move to next player
+            gameData.currentPlayerIndex = (gameData.currentPlayerIndex + 1) % gameData.players.length;
+            
+            // Activate next player
+            gameData.players[gameData.currentPlayerIndex].isActive = true;
+        }
+
+        // Skip to next witness
+        function skipToNextWitness() {
+            if (!gameData.gameActive) return;
+            
+            gameData.currentInterview++;
+            
+            if (gameData.currentInterview > gameData.totalInterviews) {
+                endGame();
+                return;
+            }
+            
+            updateProgress();
+            updateWitnessStatement();
+            questionInput.value = '';
+            
+            // Switch to next player
+            switchToNextPlayer();
+            updatePlayersDisplay();
+        }
+
+        // End the game
+        function endGame() {
+            gameData.gameActive = false;
+            clearInterval(gameData.timerInterval);
+            
+            // Calculate final scores and determine winner
+            let maxScore = 0;
+            let winner = null;
+            
+            gameData.players.forEach(player => {
+                // Bonus points for finding the thief (simulated - in real game would be based on player choice)
+                if (Math.random() > 0.5) {
+                    player.score += 50;
+                }
+                
+                if (player.score > maxScore) {
+                    maxScore = player.score;
+                    winner = player.name;
+                }
+            });
+            
+            // Display results
+            displayResults(winner);
+            
+            // Show end screen
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'block';
+        }
+
+        // Display results on end screen
+        function displayResults(winner) {
+            // Build results table
+            let resultsHTML = '';
+            gameData.players.forEach((player, index) => {
+                resultsHTML += `
+                    <tr>
+                        <td>${player.name}</td>
+                        <td>${player.correctQuestions}</td>
+                        <td>${player.cluesFound}</td>
+                        <td>${player.score}</td>
+                        <td>${index + 1}</td>
+                    </tr>
+                `;
+            });
+            resultsBodyElement.innerHTML = resultsHTML;
+            
+            // Update case result
+            caseResultElement.textContent = `The thief was ${gameData.currentCase.thief}! ${gameData.currentCase.motive}. ${winner} solved the case with the highest score!`;
+            
+            // Update thief reveal
+            thiefRevealElement.innerHTML = `
+                <p><strong>Thief Identified:</strong> ${gameData.currentCase.thief}</p>
+                <p><strong>Motive:</strong> ${gameData.currentCase.motive}</p>
+                <p><strong>Key Clue:</strong> ${gameData.currentCase.clue}</p>
+            `;
+            
+            // Update learning summary
+            learningSummaryElement.innerHTML = `
+                <p><strong>Grammar Practice Summary:</strong></p>
+                <ul>
+                    <li>You asked questions using <strong>Past Simple tense</strong></li>
+                    <li>You practiced using <strong>Did/Was/Were</strong> in questions</li>
+                    <li>You learned to form questions like: "What did you do?", "Where were you?", "Did you see...?"</li>
+                    <li>You practiced understanding answers like: "Yes, I did", "No, I wasn't", etc.</li>
+                </ul>
+            `;
+        }
+
+        // Utility function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', initGame);
+        playAgainButton.addEventListener('click', () => {
+            startScreen.style.display = 'block';
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+        });
+        
+        askButton.addEventListener('click', askQuestion);
+        
+        skipButton.addEventListener('click', skipToNextWitness);
+        
+        questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+        
+        // Example buttons to help with question formation
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                questionInput.value = e.target.getAttribute('data-example');
+                questionInput.focus();
+            });
+        });
+
+        // Initialize with start screen
+        startScreen.style.display = 'block';
+        gameScreen.style.display = 'none';
+        endScreen.style.display = 'none';
+        
+        // Set up example player names
+        document.getElementById('player1').value = 'Detective Alex';
+        document.getElementById('player2').value = 'Detective Sam';
+        
+        // Add localStorage functionality for saving progress
+        function saveProgress() {
+            const progress = {
+                players: gameData.players,
+                currentInterview: gameData.currentInterview,
+                cluesFound: gameData.cluesFound,
+                timeLeft: gameData.timeLeft
+            };
+            localStorage.setItem('pastSimpleDetectiveProgress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('pastSimpleDetectiveProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                // Check if user wants to continue (simplified - in real game would ask)
+                console.log('Saved progress found:', progress);
+            }
+        }
+        
+        // Load progress on page load
+        window.addEventListener('load', loadProgress);
+        
+        // Save progress periodically during gameplay
+        setInterval(() => {
+            if (gameData.gameActive) {
+                saveProgress();
+            }
+        }, 30000); // Save every 30 seconds
+    </script>
+</body>
+</html>
